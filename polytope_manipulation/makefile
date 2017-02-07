@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-g -std=c++11 -Wall -pedantic
+CXXFLAGS=-g -std=c++0x -Wall -pedantic
 
 check : main.o io_utils.o baralic.o
 	$(CXX) $(CXXFLAGS) -o check main.o io_utils.o baralic.o
