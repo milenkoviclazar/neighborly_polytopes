@@ -1,0 +1,17 @@
+# CLion specific
+cmake-build-debug/
+cmake-build-release/
+.idea/
+
+# make outputs
+*.o
+check
+
+# OS
+.DS_Store
+
+# polytope descriptions
+*.out
+*.txt
+*.hull
+*.diamond
