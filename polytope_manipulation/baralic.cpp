@@ -1,8 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <fstream>
-#include <ctime>
-
 
 #include "eigen/Eigen/LU"
 
@@ -53,21 +50,3 @@ void brute(vector<vector<int>> &polytope, vector<int> &a, int lvl, int r, int c)
     }
 }
 
-
-
-void calculate(vector<vector<vector<int>>> &polytopes, int r, int c) {
-    cout << "BRUTE" << endl;
-    cerr << "BRUTE" << endl;
-
-    vector<vector<int>> mat(r, vector<int>(c));
-    vector<int> a(r, 0);
-
-    for (int p = 0; p < polytopes.size(); p++) {
-        cout << "polytope " << p << ":" << endl;
-        cerr << "polytope " << p << ":" << endl;
-
-        brute(polytopes[p], a, 0, r, c);
-    }
-    cout << "END OF BRUTE" << endl;
-    cerr << "END OF BRUTE" << endl;
-}
