@@ -1,4 +1,4 @@
-CXX=g++
+CXX=mpic++
 CXXFLAGS=-g -std=c++0x -Wall -pedantic
 
 check : main.o io_utils.o baralic.o
