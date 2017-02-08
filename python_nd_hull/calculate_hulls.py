@@ -55,6 +55,16 @@ for idx, line in enumerate(content):
     print(idx)
     line = line[line.find("[") + 1:-1]
     points = parse(line)
-    hull = ConvexHull(points, qhull_options="")
-    f.write(str(idx) + ": " + str(hull.simplices.tolist()) + '\r\n')
+    hull = ConvexHull(points, qhull_options="").simplices.tolist()
+    n = len(points)
+    perm = [-1] * n
+    cnt = 0
+    for simplex in hull:
+        for i, x in enumerate(simplex):
+            if perm[simplex[i]] == -1:
+                perm[simplex[i]] = cnt
+                cnt += 1
+            simplex[i] = perm[simplex[i]]
+
+    f.write(str(idx) + ": " + str(hull).replace(" ", "") + '\r\n')
 
