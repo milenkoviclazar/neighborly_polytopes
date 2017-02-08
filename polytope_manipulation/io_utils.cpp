@@ -1,10 +1,21 @@
 #include "io_utils.h"
 
-#include <vector>
 #include <fstream>
 #include <iostream>
+#include <stack>
+#include <sstream>
 
 using namespace std;
+
+vector<int> parse(string s) {
+    vector<int> ret;
+    stringstream iss(s);
+    string val;
+    while (getline(iss, val, ',')) {
+        ret.push_back(stoi(val));
+    }
+    return ret;
+}
 
 bool parseHullFile(vector<vector<vector<int>>> &polytopeIndices, const string &hullFileName) {
     fstream fs;
@@ -13,33 +24,30 @@ bool parseHullFile(vector<vector<vector<int>>> &polytopeIndices, const string &h
         cerr << "Bad file name" << endl;
         return false;
     }
-    int braceLevel = 0;
-    int number = 0;
-    do {
-        char c;
-        fs >> c;
-        if (c == '[') {
-            braceLevel++;
-            if (braceLevel == 1) {
-                polytopeIndices.push_back(vector<vector<int>>());
-            } else if (braceLevel == 2) {
-                polytopeIndices.rbegin()->push_back(vector<int>());
-            }
-        } else if (c == ']') {
-            braceLevel--;
-            if (braceLevel == 1) {
-                polytopeIndices.rbegin()->rbegin()->push_back(number);
-                number = 0;
-            }
-        } else if (c == ',') {
-            if (braceLevel == 2) {
-                polytopeIndices.rbegin()->rbegin()->push_back(number);
-                number = 0;
-            }
-        } else if (isdigit(c)) {
-            number = 10 * number + c - '0';
+    string line;
+    while (getline(fs, line)) {
+        int lidx = line.find("[");
+        if (lidx == string::npos) {
+            continue;
         }
+        int ridx = line.rfind("]");
+        stack<char> s;
+        string tmp;
+        vector<vector<int>> polytope;
+        for (int i = lidx + 1; i < ridx; i++) {
+            if (line[i] == ']') {
+                while (s.top() != '[') {
+                    tmp += s.top();
+                    s.pop();
+                }
+                reverse(tmp.begin(), tmp.end());
+                polytope.push_back(parse(tmp));
+                tmp.clear();
+            } else {
+                s.push(line[i]);
+            }
+        }
+        polytopeIndices.push_back(polytope);
     } while (!fs.eof());
-    fs.close();
     return true;
 }
