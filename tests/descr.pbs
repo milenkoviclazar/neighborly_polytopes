@@ -1,8 +1,5 @@
-#!/bin/bash
-#PBS -e asdf.err
-#PBS -o asdf.out
-#PBS -l nodes=15:ppn=4
-#PBS -k oe
+#PBS -l nodes=15:ppn=8
+#PBS -l walltime=500:00:00
 
 module load openmpi-x86_64
-mpirun -machinefile ${PBS_NODEFILE} -np $(wc -l ${PBS_NODEFILE} | awk '{print $1}') /work/lazar/polytope_manipulation/check /work/lazar/ 10 5
+mpirun -machinefile ${PBS_NODEFILE} -np $(wc -l ${PBS_NODEFILE} | awk '{print $1}') /work/lazar/polytope_manipulation/check /work/lazar/tests/ /work/lazar/out15_8 9 4
