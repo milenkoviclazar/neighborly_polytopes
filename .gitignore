@@ -9,6 +9,7 @@ check
 
 # OS
 .DS_Store
+*.zip
 
 # polytope descriptions
 *.out
