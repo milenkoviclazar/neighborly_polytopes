@@ -3,6 +3,8 @@
 #include <queue>
 #include <sstream>
 #include <ctime>
+#include <fstream>
+#include <iostream>
 #include "baralic.h"
 #include "io_utils.h"
 
@@ -33,20 +35,12 @@ int main(int argc, char *argv[]) {
     string fileName = oss.str();
     string hullPath = basePath + fileName + ".hull";
 
-    vector<vector<vector<int>>> polytopeIndices;
-    if (!parseHullFile(polytopeIndices, hullPath)) {
-        return 0;
-    }
-
-    cerr << polytopeIndices.size() << " polytopes in total" << endl;
-    cerr << "BRUTE" << endl;
-
-    int nodeCount = polytopeIndices.size();
+    int mpiNodeCount = -1;
     int id = -1;
 
 #ifdef USE_MPI
     MPI_Init(NULL, NULL);
-    MPI_Comm_size(MPI_COMM_WORLD, &nodeCount);
+    MPI_Comm_size(MPI_COMM_WORLD, &mpiNodeCount);
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
 #endif /* USE_MPI */
 
@@ -54,15 +48,19 @@ int main(int argc, char *argv[]) {
     cerr << outFileName << endl;
     freopen(outFileName.c_str(), "w", stdout);
     clock_t begin = clock();
-    for (int p = 0; p < polytopeIndices.size(); p++) {
-        if ((id == -1) || (p % nodeCount == id)) {
-            cout << "polytope " << p << ":" << endl;
-            cerr << "polytope " << p << " at node " << id << ":" << endl;
-            vector<int> a(r, 0);
-            brute(polytopeIndices[p], a, 0, r, c);
+
+    openHullFile(hullPath);
+
+    int polytopeIdx = 0;
+    vector<vector<int>> polytopeDescription;
+    while (getNextPolytope(polytopeDescription)) {
+        if ((id == -1) || (polytopeIdx % mpiNodeCount == id)) {
+            cout << "polytope " << polytopeIdx << ":" << endl;
+            cerr << "polytope " << polytopeIdx << " at node " << id << ":" << endl;
+            startSearch(polytopeDescription, r, c);
         }
+        polytopeIdx++;
     }
-    cerr << "END OF BRUTE" << endl;
 
 #ifdef USE_MPI
     MPI_Finalize();
@@ -71,5 +69,6 @@ int main(int argc, char *argv[]) {
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout << "elapsed time: " << elapsed_secs << endl;
+    cerr << "elapsed time: " << elapsed_secs << endl;
     return 0;
 }

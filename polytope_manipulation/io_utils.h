@@ -8,5 +8,6 @@
 #include <vector>
 #include <string>
 
-bool parseHullFile(std::vector<std::vector<std::vector<int>>> &polytopeIndices, const std::string &hullFileName);
+bool openHullFile(const std::string &hullPath);
+bool getNextPolytope(std::vector<std::vector<int>> &polytope);
 #endif //ND_CONVEX_HULL_IO_UTILS_H_H

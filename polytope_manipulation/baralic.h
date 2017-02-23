@@ -3,6 +3,6 @@
 
 #include <vector>
 
-void brute(std::vector<std::vector<int>> &polytope, std::vector<int> &a, int lvl, int r, int c);
+void startSearch(const std::vector<std::vector<int>> &polytope, int r, int c);
 
 #endif //ND_CONVEX_HULL_BARALIC_H

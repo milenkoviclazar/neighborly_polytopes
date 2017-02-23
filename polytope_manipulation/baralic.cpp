@@ -6,47 +6,58 @@
 using namespace std;
 using namespace Eigen;
 
-bool get(vector<int> &a, vector<int> &swaps, int i, int j, int r) {
-    int idx = 0;
-    while (idx < r && swaps[idx] < j) {
-        idx++;
-    }
-    if (idx < r && swaps[idx] == j) {
-        return i == idx;
-    }
-    return a[i] & (1 << (j - idx));
-}
+vector<vector<int>> polytope;
+vector<int> a;
+Matrix<double, Dynamic, Dynamic> mat;
+int r, c;
+int n;
 
-void brute(vector<vector<int>> &polytope, vector<int> &a, int lvl, int r, int c) {
-    if (lvl == r) {
-        Matrix<double, Dynamic, Dynamic> A;
-        A.resize(r, r);
-        bool valid = true;
+void brute(int lvl) {
+    if (lvl == n) {
         for (int v = 0; v < polytope.size(); v++) {
             for (int i = 0; i < r; i++) {
                 for (int j = 0; j < r; j++) {
-                    A(i, j) = polytope[v][j] < r ? bool(i == polytope[v][j]) : bool(a[i] & (1 << (polytope[v][j] - r)));
+                    mat(i, j) =
+                            polytope[v][j] < r ? bool(i == polytope[v][j]) : bool(a[polytope[v][j] - r] & (1 << i));
                 }
             }
-            if ((int(A.determinant()) & 1) == 0) {
-                valid = false;
-                break;
+            if ((int(mat.determinant()) & 1) == 0) {
+                return;
             }
         }
-        if (valid) {
-            for (int i = 0; i < r; i++) {
-                for (int j = 0; j < c; j++) {
-                    cout << get(a, polytope[0], i, j, r);
-                }
-                cout << endl;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                cout << int(j < r ? bool(i == j) : bool(a[j - r] & (1 << i)));
             }
             cout << endl;
         }
+        cout << endl;
         return;
     }
-    int n = c - r;
-    for (a[lvl] = 0; a[lvl] < 1 << n; a[lvl]++) {
-        brute(polytope, a, lvl + 1, r, c);
+    for (a[lvl] = 1; a[lvl] < 1 << r; a[lvl]++) {
+        bool linearlyDependent = false;
+        for (int j = 0; j < lvl; j++) {
+            if (a[j] == a[lvl]) {
+                linearlyDependent = true;
+                break;
+            }
+        }
+        if (linearlyDependent) {
+            continue;
+        }
+        brute(lvl + 1);
     }
 }
 
+void startSearch(const vector<vector<int>> &polytopeDescription, int rows, int cols) {
+    mat.resize(rows, rows);
+    polytope = polytopeDescription;
+    a.clear();
+    r = rows;
+    c = cols;
+    n = c - r;
+    for (int i = 0; i < n; i++) {
+        a.push_back(0);
+    }
+    brute(0);
+}

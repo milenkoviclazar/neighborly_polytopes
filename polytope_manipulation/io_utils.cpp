@@ -4,8 +4,11 @@
 #include <iostream>
 #include <stack>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
+
+fstream fs;
 
 vector<int> parse(string s) {
     vector<int> ret;
@@ -17,23 +20,31 @@ vector<int> parse(string s) {
     return ret;
 }
 
-bool parseHullFile(vector<vector<vector<int>>> &polytopeIndices, const string &hullFileName) {
-    fstream fs;
-    fs.open(hullFileName, fstream::in);
+bool openHullFile(const string &hullPath) {
+    fs.open(hullPath, fstream::in);
     if (!fs.good()) {
         cerr << "Bad file name" << endl;
         return false;
     }
+    return true;
+}
+
+void closeStream() {
+    fs.close();
+}
+
+bool getNextPolytope(vector<vector<int>> &polytope) {
+    polytope.clear();
     string line;
-    while (getline(fs, line)) {
+    if (getline(fs, line)) {
         int lidx = line.find("[");
         if (lidx == string::npos) {
-            continue;
+            closeStream();
+            return false;
         }
         int ridx = line.rfind("]");
         stack<char> s;
         string tmp;
-        vector<vector<int>> polytope;
         for (int i = lidx + 1; i < ridx; i++) {
             if (line[i] == ']') {
                 while (s.top() != '[') {
@@ -47,7 +58,9 @@ bool parseHullFile(vector<vector<vector<int>>> &polytopeIndices, const string &h
                 s.push(line[i]);
             }
         }
-        polytopeIndices.push_back(polytope);
-    } while (!fs.eof());
-    return true;
+        return true;
+    }
+    return false;
 }
+
+
