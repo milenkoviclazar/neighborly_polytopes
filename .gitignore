@@ -11,6 +11,9 @@ check
 .DS_Store
 *.zip
 
+# Python
+*__pycache__
+
 # polytope descriptions
 *.out
 *.txt

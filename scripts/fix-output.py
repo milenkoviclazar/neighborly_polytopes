@@ -1,10 +1,7 @@
 import sys
+from utils import get_content
 
-input_filename = sys.argv[1]
-
-with open(input_filename) as f:
-    content = f.readlines()
-content = [x.strip() for x in content]
+content = get_content(sys.argv[1])
 
 output_filename = sys.argv[2]
 f = open(output_filename, 'w')

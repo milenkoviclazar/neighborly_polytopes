@@ -1,6 +1,6 @@
 from scipy.spatial import ConvexHull
 import sys
-
+from utils import get_content
 
 def fraction_to_float(s):
     if s.find("/") == -1:
@@ -39,12 +39,7 @@ def parse(s):
             stack.append(c)
     return ret
 
-
-input_filename = sys.argv[1]
-
-with open(input_filename) as f:
-    content = f.readlines()
-content = [x.strip() for x in content]
+content = get_content(sys.argv[1])
 
 output_filename = input_filename.replace(".txt", ".hull")
 print(output_filename)
@@ -67,4 +62,3 @@ for idx, line in enumerate(content):
             simplex[i] = perm[simplex[i]]
 
     f.write(str(idx) + ": " + str(hull).replace(" ", "") + '\r\n')
-

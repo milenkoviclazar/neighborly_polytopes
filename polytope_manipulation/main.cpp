@@ -45,18 +45,16 @@ int main(int argc, char *argv[]) {
 #endif /* USE_MPI */
 
     string outFileName = outputPath + fileName + to_string((long long int) id) + ".out";
-    cerr << outFileName << endl;
     freopen(outFileName.c_str(), "w", stdout);
     clock_t begin = clock();
 
     openHullFile(hullPath);
-
     int polytopeIdx = 0;
     vector<vector<int>> polytopeDescription;
     while (getNextPolytope(polytopeDescription)) {
+        cerr << polytopeIdx << endl;
         if ((id == -1) || (polytopeIdx % mpiNodeCount == id)) {
             cout << "polytope " << polytopeIdx << ":" << endl;
-            cerr << "polytope " << polytopeIdx << " at node " << id << ":" << endl;
             startSearch(polytopeDescription, r, c);
         }
         polytopeIdx++;

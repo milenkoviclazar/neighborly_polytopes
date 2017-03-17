@@ -6,15 +6,16 @@
 using namespace std;
 using namespace Eigen;
 
-vector<vector<int>> polytope;
-vector<int> a;
+int **polytope;
+int polytopeSize;
+int *a;
 Matrix<double, Dynamic, Dynamic> mat;
 int r, c;
 int n;
 
 void brute(int lvl) {
     if (lvl == n) {
-        for (int v = 0; v < polytope.size(); v++) {
+        for (int v = 0; v < polytopeSize; v++) {
             for (int i = 0; i < r; i++) {
                 for (int j = 0; j < r; j++) {
                     mat(i, j) =
@@ -51,13 +52,20 @@ void brute(int lvl) {
 
 void startSearch(const vector<vector<int>> &polytopeDescription, int rows, int cols) {
     mat.resize(rows, rows);
-    polytope = polytopeDescription;
-    a.clear();
+    polytopeSize = polytopeDescription.size();
+    polytope = new int *[polytopeDescription.size()];
+    for (int i = 0; i < polytopeDescription.size(); i++) {
+        polytope[i] = new int[polytopeDescription[i].size()];
+        for (int j = 0; j < polytopeDescription[i].size(); j++) {
+            polytope[i][j] = polytopeDescription[i][j];
+        }
+    }
     r = rows;
     c = cols;
     n = c - r;
+    a = new int[n];
     for (int i = 0; i < n; i++) {
-        a.push_back(0);
+        a[i] = 0;
     }
     brute(0);
 }
