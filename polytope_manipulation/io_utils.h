@@ -10,4 +10,5 @@
 
 bool openHullFile(const std::string &hullPath);
 bool getNextPolytope(std::vector<std::vector<int>> &polytope);
+std::string fixPath(std::string path);
 #endif //ND_CONVEX_HULL_IO_UTILS_H_H

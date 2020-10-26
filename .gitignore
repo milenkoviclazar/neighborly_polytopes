@@ -13,9 +13,19 @@ check
 
 # Python
 *__pycache__
+venv/
 
 # polytope descriptions
 *.out
 *.txt
 *.hull
 *.diamond
+*.solved
+
+#LaTeX
+*.tex
+*.aux
+*.pdf
+*.log
+*.synctex.gz
+

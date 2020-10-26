@@ -5,7 +5,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
-#include "baralic.h"
+#include "search.h"
 #include "io_utils.h"
 
 #ifdef USE_MPI
@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
 
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    cout << "elapsed time: " << elapsed_secs << endl;
     cerr << "elapsed time: " << elapsed_secs << endl;
     return 0;
 }

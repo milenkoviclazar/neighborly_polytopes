@@ -1,18 +1,24 @@
 import sys
 from utils import get_content
 
-content = get_content(sys.argv[1])
+infilename = sys.argv[1]
+outfilename = infilename[:-3] + "solved"
+content = get_content(infilename)
 
-output_filename = sys.argv[2]
-f = open(output_filename, 'w')
+solved = []
+
+
 for line in content:
     if "polytope" in line:
-        prevline = line
-    elif "elapsed" in line:
-        pass
-    else:
-        if prevline is not None:
-            f.write(prevline + "\r\n")
-            prevline = None
-        f.write(line + "\r\n")
+        numb = line.split(" ")[1]
+        numb = numb[:-1]
+        numb = int(numb)
+        solved.append(numb)
+
+f = open(outfilename, 'w')
+f.write(str(len(solved)))
+f.write("\n")
+for x in solved:
+    f.write(str(x) + " ")
+f.write("\n")
 f.close()

@@ -10,6 +10,13 @@ using namespace std;
 
 fstream fs;
 
+string fixPath(string path) {
+    if (*path.rbegin() != '/') {
+        path += '/';
+    }
+    return path;
+}
+
 vector<int> parse(string s) {
     vector<int> ret;
     stringstream iss(s);
@@ -37,6 +44,7 @@ bool getNextPolytope(vector<vector<int>> &polytope) {
     polytope.clear();
     string line;
     if (getline(fs, line)) {
+//        cerr << line << endl;
         int lidx = line.find("[");
         if (lidx == string::npos) {
             closeStream();
@@ -62,5 +70,3 @@ bool getNextPolytope(vector<vector<int>> &polytope) {
     }
     return false;
 }
-
-
